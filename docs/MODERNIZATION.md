@@ -68,7 +68,7 @@ Tavoite: kloonaa → buildaa ilman arvailua.
 - [x] GitHub Actions: macOS arm64 smoke test
 - [ ] `mem_fun` → `std::mem_fn` / lambdat (C++17-yhteensopivuus)
 - [ ] Autoconf 2.7x: korvaa `AC_TRY_LINK`, `AC_LANG_CPLUSPLUS`
-- [ ] Poista `configure.ac`:n oletus-SDK (`MacOSX10.4u.sdk`)
+- [x] Poista `configure.ac`:n oletus-SDK (`MacOSX10.4u.sdk`) — root: xcrun-autodetect
 - [ ] Upstream PR: liblo 0.36 + arm64-atomiikka
 
 **Deliverable:** CI vihreä, README ohjaa Mac-buildiin.
