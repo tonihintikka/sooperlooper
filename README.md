@@ -101,6 +101,9 @@ To connect your MIDI device, you need to use a MIDI patchbay.
 
 
 ## BUILD REQUIREMENTS
+
+For a modern macOS (Apple Silicon) build guide, see [docs/BUILD-MACOS.md](docs/BUILD-MACOS.md).
+For the full modernization roadmap, see [docs/MODERNIZATION.md](docs/MODERNIZATION.md).
 | Package       | URL                                                                                                              | Comments                         |
 |---------------|------------------------------------------------------------------------------------------------------------------|----------------------------------|
 | JACK  >= 0.80 | http://jackaudio.org/                                                                                            |                                  |

@@ -428,7 +428,91 @@ __asm__ __volatile__(SMP_LOCK "orl %0,%1" \
 
 /***********************************************************************/
 
-#else /* !PPC && !i386 */
+#elif defined(__aarch64__) || defined(__arm64__)
+
+#ifndef __ARCH_AARCH64_ATOMIC__
+#define __ARCH_AARCH64_ATOMIC__
+
+/*
+ * ARM64 / Apple Silicon atomic operations via GCC/clang __atomic builtins.
+ */
+
+typedef struct { volatile int counter; } atomic_t;
+
+#define ATOMIC_INIT(i)  { (i) }
+
+#define atomic_read(v)          __atomic_load_n(&(v)->counter, __ATOMIC_SEQ_CST)
+#define atomic_set(v,i)         __atomic_store_n(&(v)->counter, (i), __ATOMIC_SEQ_CST)
+
+static __inline__ void atomic_add(int i, atomic_t *v)
+{
+	(void) __atomic_add_fetch(&v->counter, i, __ATOMIC_SEQ_CST);
+}
+
+static __inline__ int atomic_add_return(int i, atomic_t *v)
+{
+	return __atomic_add_fetch(&v->counter, i, __ATOMIC_SEQ_CST);
+}
+
+static __inline__ void atomic_sub(int i, atomic_t *v)
+{
+	(void) __atomic_sub_fetch(&v->counter, i, __ATOMIC_SEQ_CST);
+}
+
+static __inline__ int atomic_sub_return(int i, atomic_t *v)
+{
+	return __atomic_sub_fetch(&v->counter, i, __ATOMIC_SEQ_CST);
+}
+
+static __inline__ int atomic_sub_and_test(int i, atomic_t *v)
+{
+	return __atomic_sub_fetch(&v->counter, i, __ATOMIC_SEQ_CST) == 0;
+}
+
+static __inline__ void atomic_inc(atomic_t *v)
+{
+	(void) __atomic_add_fetch(&v->counter, 1, __ATOMIC_SEQ_CST);
+}
+
+static __inline__ void atomic_dec(atomic_t *v)
+{
+	(void) __atomic_sub_fetch(&v->counter, 1, __ATOMIC_SEQ_CST);
+}
+
+static __inline__ int atomic_dec_and_test(atomic_t *v)
+{
+	return __atomic_sub_fetch(&v->counter, 1, __ATOMIC_SEQ_CST) == 0;
+}
+
+static __inline__ int atomic_inc_and_test(atomic_t *v)
+{
+	return __atomic_add_fetch(&v->counter, 1, __ATOMIC_SEQ_CST) == 0;
+}
+
+static __inline__ int atomic_add_negative(int i, atomic_t *v)
+{
+	return __atomic_add_fetch(&v->counter, i, __ATOMIC_SEQ_CST) < 0;
+}
+
+#define atomic_dec_return(v) atomic_sub_return(1, (v))
+#define atomic_inc_return(v) atomic_add_return(1, (v))
+
+#define atomic_clear_mask(mask, addr) \
+	__atomic_and_fetch((addr), ~(mask), __ATOMIC_SEQ_CST)
+
+#define atomic_set_mask(mask, addr) \
+	__atomic_or_fetch((addr), (mask), __ATOMIC_SEQ_CST)
+
+#define smp_mb__before_atomic_dec() __sync_synchronize()
+#define smp_mb__after_atomic_dec()  __sync_synchronize()
+#define smp_mb__before_atomic_inc() __sync_synchronize()
+#define smp_mb__after_atomic_inc()  __sync_synchronize()
+
+#endif /* __ARCH_AARCH64_ATOMIC__ */
+
+/***********************************************************************/
+
+#else /* !PPC && !i386 && !aarch64 */
 
 #ifdef __sparc__
 
