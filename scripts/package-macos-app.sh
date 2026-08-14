@@ -41,15 +41,31 @@ cp "${MAC}/README_AudioUnit64.txt" "${DIST}/" 2>/dev/null || true
 
 if command -v dylibbundler >/dev/null 2>&1; then
   echo "==> bundle dylibs (dylibbundler)"
-  for bin in sooperlooper slgui; do
-    dylibbundler -od -b -ns -x "${APP}/Contents/MacOS/${bin}" \
-      -d "${APP}/Contents/Frameworks/" \
-      -p @executable_path/../Frameworks/
-  done
+  # Engine first (-od creates Frameworks). GUI second (no -od — must not wipe engine libs).
+  dylibbundler -od -b -ns -x "${APP}/Contents/MacOS/sooperlooper" \
+    -d "${APP}/Contents/Frameworks/" \
+    -p @executable_path/../Frameworks/
+  dylibbundler -b -ns -of -x "${APP}/Contents/MacOS/slgui" \
+    -d "${APP}/Contents/Frameworks/" \
+    -p @executable_path/../Frameworks/
 else
   echo "error: dylibbundler required (brew install dylibbundler)" >&2
   exit 1
 fi
+
+echo "==> verify bundled libraries"
+missing=0
+while IFS= read -r dep; do
+  lib=$(basename "${dep}")
+  if [[ ! -f "${APP}/Contents/Frameworks/${lib}" ]]; then
+    echo "error: missing ${lib} in Frameworks (required by sooperlooper)" >&2
+    missing=1
+  fi
+done < <(otool -L "${APP}/Contents/MacOS/sooperlooper" | awk '/@executable_path\/..\/Frameworks\// {print $1}')
+if [[ "${missing}" -ne 0 ]]; then
+  exit 1
+fi
+echo "PASS: sooperlooper dependencies bundled"
 
 echo "==> ad-hoc codesign (Apple Silicon requires valid signature)"
 shopt -s nullglob
