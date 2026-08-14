@@ -24,7 +24,33 @@ Macilla on **kaksi erillistä build-polkuja**:
 
 ---
 
-## Vaihe 0 — Perusta
+## Testaus jokaisen vaiheen jälkeen
+
+**Sääntö:** älä siirry seuraavaan tehtävään ennen kuin testit menevät läpi.
+
+### Nopea smoke test (paikallinen)
+
+```bash
+./scripts/build-macos.sh    # tai make, jos jo konfiguroitu
+./scripts/test-macos.sh     # binäärit, versio, arm64-atomiikka
+./scripts/test-macos.sh --with-jack   # + moottori käynnistyy JACKin kanssa
+```
+
+### CI
+
+GitHub Actions `macOS build` ajaa `./scripts/build-macos.sh` + binääritarkistuksen jokaisella pushilla.
+
+### Vaihekohtaiset tarkistukset
+
+| Vaihe | Testaa |
+|---|---|
+| 1 dev-build | `test-macos.sh`, CI vihreä |
+| 2 `.app` | `open macdist/SooperLooper.app`, GUI avautuu |
+| 3 AU | `auval -v aumu SLoP Esse`, plugin löytyy DAW:ssa |
+| 4 DMG | asennus puhtaalle Macille, Gatekeeper ok |
+| 5 arkkitehtuuri | edelliset + loop record/playback -regressio |
+
+---
 
 - [x] Fork `tonihintikka/sooperlooper`, GPL-2.0 säilyy
 - [x] liblo 0.36 OSC-handler-korjaus

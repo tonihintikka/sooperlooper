@@ -21,8 +21,5 @@ jobs:
       - name: Build
         run: ./scripts/build-macos.sh
 
-      - name: Verify binaries
-        run: |
-          file src/sooperlooper
-          file src/gui/slgui
-          src/sooperlooper -V
+      - name: Smoke tests
+        run: ./scripts/test-macos.sh

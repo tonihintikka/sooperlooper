@@ -22,6 +22,8 @@ Huomioita:
 git clone git@github.com:tonihintikka/sooperlooper.git
 cd sooperlooper
 ./scripts/build-macos.sh
+./scripts/test-macos.sh          # smoke test
+./scripts/test-macos.sh --with-jack   # + JACK-moottori (valinnainen)
 ```
 
 Binäärit:

@@ -50,6 +50,9 @@ echo "==> ./configure"
 echo "==> make -j${JOBS}"
 make -j"${JOBS}"
 
+echo "==> smoke tests"
+"${ROOT}/scripts/test-macos.sh"
+
 echo ""
 echo "Build OK:"
 echo "  ${ROOT}/src/sooperlooper"
