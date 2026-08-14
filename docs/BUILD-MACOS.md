@@ -70,12 +70,24 @@ make -j"$(sysctl -n hw.ncpu)"
    ./src/gui/slgui
    ```
 
+## `.app`-paketti
+
+Build + paketoi Finderistä avattava app (ei AU-pluginia):
+
+```bash
+brew install dylibbundler   # kerran
+./scripts/package-macos-app.sh
+open mac/macdist/SooperLooper.app
+```
+
+App sisältää `slgui` + `sooperlooper` ja bundlatut dylibit (`Contents/Frameworks/`).
+
 ## Tunnetut rajoitukset
 
 - **JackRouter** ei toimi macOS Catalina+:lla — vain JACK-native-sovellukset (SooperLooper ok)
 - **Ei-ASCII-laitenimet** (esim. ä/ö laitteen nimessä) voivat rikkoa JACKin laitteen valinnan ([jack2#1017](https://github.com/jackaudio/jack2/issues/1017))
-- **AU-plugin** vaatii erillisen Xcode-buildin (`mac/SooperLooperAU/`) — ei vielä modernisoitu tässä forkissa
-- **`.app`-bundle** — vanha `mac/stepsnew.sh`; ks. [MODERNIZATION.md](MODERNIZATION.md)
+- **AU-plugin** vaatii erillisen Xcode-buildin (`mac/SooperLooperAU/`) — ei vielä modernisoitu
+- **`.app`-paketti** — `./scripts/package-macos-app.sh` (AU puuttuu; vanha `mac/stepsnew.sh` vaatii Xcodea)
 
 ## Fork vs. upstream
 
