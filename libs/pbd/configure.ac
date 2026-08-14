@@ -93,8 +93,11 @@ dnl NOTE: We clobber wxUSE_MACOSX_SDK with the SDK path
 if test "x$wxUSE_MACOSX_SDK" = "xno"; then
     wxUSE_MACOSX_SDK=
 elif test "x$wxUSE_MACOSX_SDK" = "xyes"; then
-    # TODO: Search for most recent SDK and use it.
-    wxUSE_MACOSX_SDK="/Developer/SDKs/MacOSX10.4u.sdk"
+    wxUSE_MACOSX_SDK=`xcrun --sdk macosx --show-sdk-path 2>/dev/null`
+    if test "x$wxUSE_MACOSX_SDK" = "x"; then
+        AC_MSG_WARN([Could not detect macOS SDK via xcrun; using compiler default])
+        wxUSE_MACOSX_SDK=
+    fi
 fi
 
 
